@@ -16,7 +16,7 @@
             "publisher": "Canonical",
             "offer": "UbuntuServer",
             "sku": "18.04-LTS",
-            "version": "latest/18.04.201912050"
+            "version": "18.04.201912050"
         },
         "customize": [
             {
