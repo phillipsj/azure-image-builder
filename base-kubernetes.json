@@ -5,45 +5,72 @@
     "dependsOn": [],
     "tags": {
         "imagebuilderTemplate": "ubuntu1804"
-            },
+    },
     "properties": {
-
-        "buildTimeoutInMinutes" : 80,
-        
-        "vmProfile": 
-            {
+        "buildTimeoutInMinutes": 80,
+        "vmProfile": {
             "vmSize": "Standard_D1_v2"
-            },
-
+        },
         "source": {
             "type": "PlatformImage",
-                "publisher": "Canonical",
-                "offer": "UbuntuServer",
-                "sku": "18.04-LTS",
-                "version": "latest/18.04.201912050"
-            
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "18.04-LTS",
+            "version": "latest/18.04.201912050"
         },
         "customize": [
             {
                 "type": "Shell",
-                "name": "InstallUpgrades",
+                "name": "Install base packages",
                 "inline": [
-                    "sudo apt install unattended-upgrades"
+                    "sudo apt-get update",
+                    "sudo apt-get install -y apt-transport-https curl ca-certificates gnupg-agent software-properties-common"
+                ]
+            },
+            {
+                "type": "Shell",
+                "name": "AddKubernetesRepo",
+                "inline": [
+                    "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+                    "echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list"
+                ]
+            },
+            {
+                "type": "Shell",
+                "name": "AddDockerRepo",
+                "inline": [
+                    "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+                    "sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\""
+                ]
+            },
+            {
+                "type": "Shell",
+                "name": "InstallKuberentesLibs",
+                "inline": [
+                    "sudo apt-get update",
+                    "sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu kubelet=1.16.4-00 kubeadm=1.16.4-00 kubectl=1.16.4-00",
+                    "sudo apt-mark hold kubelet kubeadm kubectl docker-ce"
+                ]
+            },
+            {
+                "type": "Shell",
+                "name": "DeprovisionVM",
+                "inline": [
+                    "sudo waagent -deprovision+user -force"
                 ]
             }
-
         ],
-        "distribute": 
-            [
-                {   "type":"ManagedImage",
-                    "imageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/images/<imageName>",
-                    "location": "<region>",
-                    "runOutputName": "<runOutputName>",
-                    "artifactTags": {
-                        "source": "azVmImageBuilder",
-                        "baseosimg": "ubuntu1804"
-                    }
+        "distribute": [
+            {
+                "type": "ManagedImage",
+                "imageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/images/<imageName>",
+                "location": "<region>",
+                "runOutputName": "<runOutputName>",
+                "artifactTags": {
+                    "source": "azVmImageBuilder",
+                    "baseosimg": "ubuntu1804"
                 }
-            ]
-        }
+            }
+        ]
     }
+}
