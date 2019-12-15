@@ -21,7 +21,7 @@
         "customize": [
             {
                 "type": "Shell",
-                "name": "Install base packages",
+                "name": "installBasePackages",
                 "inline": [
                     "sudo apt-get update",
                     "sudo apt-get install -y apt-transport-https curl ca-certificates gnupg-agent software-properties-common"
@@ -29,7 +29,7 @@
             },
             {
                 "type": "Shell",
-                "name": "AddKubernetesRepo",
+                "name": "addKubernetesRepo",
                 "inline": [
                     "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
                     "echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list"
@@ -37,7 +37,7 @@
             },
             {
                 "type": "Shell",
-                "name": "AddDockerRepo",
+                "name": "addDockerRepo",
                 "inline": [
                     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
                     "sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\""
@@ -45,18 +45,11 @@
             },
             {
                 "type": "Shell",
-                "name": "InstallKuberentesLibs",
+                "name": "installKuberentesLibs",
                 "inline": [
                     "sudo apt-get update",
                     "sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu kubelet=1.16.4-00 kubeadm=1.16.4-00 kubectl=1.16.4-00",
                     "sudo apt-mark hold kubelet kubeadm kubectl docker-ce"
-                ]
-            },
-            {
-                "type": "Shell",
-                "name": "DeprovisionVM",
-                "inline": [
-                    "sudo waagent -deprovision+user -force"
                 ]
             }
         ],
@@ -68,7 +61,8 @@
                 "runOutputName": "<runOutputName>",
                 "artifactTags": {
                     "source": "azVmImageBuilder",
-                    "baseosimg": "ubuntu1804"
+                    "baseosimg": "ubuntu1804",
+                    "kubernetesVersion": "1.16.4"
                 }
             }
         ]
