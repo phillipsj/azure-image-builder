@@ -1,11 +1,7 @@
 # Azure Image Builder
 ----------------------------------------------------------------------------
 
-Get the list of Ubuntu images you can use.
-
-```bash
-az vm image list -l eastus -f UbuntuServer -p Canonical --output table –-all
-```
+This is part of the [Azure Advent Calendar](https://azureadventcalendar.com/) and the blog post it is associated with can be found [here](https://phillipsj.net/posts/azure-image-builder/)
 
 Setup the environment.
 
@@ -134,9 +130,3 @@ Here is how we can cleanup the template if needed.
      --resource-type Microsoft.VirtualMachineImages/imageTemplates \
      -n baseKubernetes
 ```     
-
-
-
-Latest tag will not work.     
-     
- Looks like you don't need to deprovision when  using the image builder as it does it automagically.  https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-json?toc=%2Fazure%2Fvirtual-machines%2Fwindows%2Ftoc.json#generalize**  
